@@ -1,4 +1,7 @@
-build
-philo
-philo_bonus
+./philo/build
+./philo/philo
+
+./philo_bonus/build
+./philo_bonus/philo_bonus
+
 .vscode
