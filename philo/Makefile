@@ -1,7 +1,7 @@
-vpath %.c src
+vpath %.c src src/lib
 
 NAME := philo
-CFLAGS := -Wextra -Wall -Werror
+CFLAGS := -Wextra -Wall
 CFLAGS += -g3 -O3
 JOBS := -j50
 
@@ -16,7 +16,7 @@ OBJ_DIR := build
 INCLUDE_DIR := include
 INCLUDES := -I$(INCLUDE_DIR)
 
-SRCS := philosophers.c
+SRCS := philosophers.c ft_atoi.c init.c utils.c exit.c main.c
 OBJS := $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
 all: $(NAME)
