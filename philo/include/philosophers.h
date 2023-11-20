@@ -6,7 +6,7 @@
 /*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 19:08:04 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/16 22:41:51 by paulo            ###   ########.fr       */
+/*   Updated: 2023/11/20 09:42:27 by paulo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct s_data
 	int					t_eat;
 	int					t_sleep;
 	int					n_eat;
-	int					stop;
+	bool				stop;
 	long int			t_start;
 	t_philo				*philo;
 	pthread_mutex_t		print;
@@ -57,10 +57,9 @@ typedef struct s_philo
 void					free_all(t_data *data);
 
 // Philosophers
-void					*philo_life(void *content);
+bool					philo_handler(t_data *data);
 
 // Init
-bool					philo_init(t_data *data);
 bool					init_data(t_data *data, char **argv);
 
 // Utils
@@ -72,5 +71,7 @@ void					print(t_philo *philo, char *str);
 // Lib
 int						ft_atoi(const char *str);
 bool					ft_isdigit(int c);
+bool					ft_isspace(int c);
+void					*ft_memset(void *s, int c, size_t n);
 
 #endif

@@ -1,30 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/16 21:14:57 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/20 09:58:41 by paulo            ###   ########.fr       */
+/*   Created: 2023/11/20 09:40:42 by paulo             #+#    #+#             */
+/*   Updated: 2023/11/20 09:51:36 by paulo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	main(int argc, char **argv)
+void	*ft_memset(void *s, int c, size_t n)
 {
-	t_data	data;
+	char	*ptr;
 
-	if (argc != 5 && argc != 6)
-		return (EXIT_FAILURE);
-	if (!init_data(&data, argv))
-	{
-		if (data.philo != NULL)
-			free(data.philo);
-		return (EXIT_FAILURE);
-	}
-	philo_handler(&data);
-	free_all(&data);
-	return (EXIT_SUCCESS);
+	ptr = (char *)s;
+	while (n--)
+		*ptr++ = (unsigned char)c;
+	return (s);
 }

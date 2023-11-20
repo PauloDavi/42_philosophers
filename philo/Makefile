@@ -16,7 +16,8 @@ OBJ_DIR := build
 INCLUDE_DIR := include
 INCLUDES := -I$(INCLUDE_DIR)
 
-SRCS := philosophers.c ft_atoi.c init.c utils.c exit.c main.c
+SRCS := philosophers.c ft_atoi.c init.c utils.c exit.c main.c ft_isdigit.c
+SRCS += ft_isspace.c ft_memset.c
 OBJS := $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
 all: $(NAME)

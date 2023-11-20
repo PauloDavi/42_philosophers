@@ -6,7 +6,7 @@
 /*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 01:35:01 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/16 22:23:52 by paulo            ###   ########.fr       */
+/*   Updated: 2023/11/20 09:27:13 by paulo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@
 bool	is_dead(t_philo *philo, int nb)
 {
 	pthread_mutex_lock(&philo->data->dead);
-	if (nb)
-		philo->data->stop = 1;
+	if (nb != 0)
+		philo->data->stop = true;
 	if (philo->data->stop)
 	{
 		pthread_mutex_unlock(&philo->data->dead);

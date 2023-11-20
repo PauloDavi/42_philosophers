@@ -6,17 +6,47 @@
 /*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 14:12:00 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/16 22:50:40 by paulo            ###   ########.fr       */
+/*   Updated: 2023/11/20 10:19:35 by paulo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
 static void	*check_death(void *content);
+static void	*philo_life(void *content);
 static void	take_fork(t_philo *philo);
 static void	philo_eat(t_philo *philo);
 
-void	*philo_life(void *content)
+bool	philo_handler(t_data *data)
+{
+	int	i;
+
+	data->t_start = timestamp();
+	i = -1;
+	while (++i < data->n_philo)
+	{
+		data->philo[i].n = i + 1;
+		data->philo[i].last_eat = 0;
+		data->philo[i].fork_r = NULL;
+		data->philo[i].data = data;
+		data->philo[i].m_count = 0;
+		pthread_mutex_init(&(data->philo[i].fork_l), NULL);
+		if (i == data->n_philo - 1)
+			data->philo[i].fork_r = &data->philo[0].fork_l;
+		else
+			data->philo[i].fork_r = &data->philo[i + 1].fork_l;
+		if (pthread_create(&data->philo[i].thread, NULL, &philo_life,
+				&(data->philo[i])) != 0)
+			return (false);
+	}
+	i = -1;
+	while (++i < data->n_philo)
+		if (pthread_join(data->philo[i].thread, NULL) != 0)
+			return (false);
+	return (true);
+}
+
+static void	*philo_life(void *content)
 {
 	t_philo		*philo;
 	pthread_t	t;
@@ -60,6 +90,7 @@ static void	*check_death(void *content)
 		pthread_mutex_unlock(&philo->data->m_stop);
 		print(philo, "died\n");
 		is_dead(philo, 1);
+		return (NULL);
 	}
 	pthread_mutex_unlock(&philo->data->m_eat);
 	pthread_mutex_unlock(&philo->data->m_stop);

@@ -6,7 +6,7 @@
 /*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 20:43:42 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/16 21:27:11 by paulo            ###   ########.fr       */
+/*   Updated: 2023/11/20 10:01:36 by paulo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,32 +15,22 @@
 int	ft_atoi(const char *str)
 {
 	int	i;
-	int	res;
-	int	signe;
+	int	ret;
+	int	sig;
 
 	i = 0;
-	signe = 1;
-	res = 0;
-	while ((str[i] >= 9 && str[i] <= 13) || (str[i] == ' '))
+	sig = 1;
+	ret = 0;
+	while (ft_isspace(str[i]))
 		i++;
 	if (str[i] == '-')
+		sig = -1;
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	while (ft_isdigit(str[i]))
 	{
-		signe *= -1;
+		ret = ret * 10 + (sig * (str[i] - '0'));
 		i++;
 	}
-	else if (str[i] == '+')
-		i++;
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		res = res * 10 + str[i] - '0';
-		i++;
-	}
-	return (res * signe);
-}
-
-bool	ft_isdigit(int c)
-{
-	if (c >= '0' && c <= '9')
-		return (true);
-	return (false);
+	return (ret);
 }
