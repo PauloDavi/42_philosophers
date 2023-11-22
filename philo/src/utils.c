@@ -6,7 +6,7 @@
 /*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 01:35:01 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/20 09:27:13 by paulo            ###   ########.fr       */
+/*   Updated: 2023/11/22 02:43:42 by paulo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@
 
 #include "philosophers.h"
 
-bool	is_dead(t_philo *philo, int nb)
+bool	is_dead(t_philo *philo, bool set_dead)
 {
 	pthread_mutex_lock(&philo->data->dead);
-	if (nb != 0)
+	if (set_dead)
 		philo->data->stop = true;
 	if (philo->data->stop)
 	{
@@ -39,7 +39,7 @@ bool	is_dead(t_philo *philo, int nb)
 	return (false);
 }
 
-long long	timestamp(void)
+long int	timestamp(void)
 {
 	struct timeval	tv;
 
@@ -47,7 +47,7 @@ long long	timestamp(void)
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-void	ft_usleep(int ms)
+void	msleep(int ms)
 {
 	long int	time;
 
@@ -62,8 +62,23 @@ void	print(t_philo *philo, char *str)
 
 	pthread_mutex_lock(&(philo->data->print));
 	time = timestamp() - philo->data->t_start;
-	if (!philo->data->stop && time >= 0 && time <= INT_MAX && !is_dead(philo,
-			0))
-		printf("%lld %d %s", timestamp() - philo->data->t_start, philo->n, str);
+	if (!philo->data->stop && time >= 0 && !is_dead(philo, false))
+		printf("%ld %ld %s", timestamp() - philo->data->t_start, philo->n, str);
 	pthread_mutex_unlock(&(philo->data->print));
+}
+
+bool	philo_init(t_data *data, int i)
+{
+	data->philo[i].n = i + 1;
+	data->philo[i].last_eat = 0;
+	data->philo[i].fork_r = NULL;
+	data->philo[i].data = data;
+	data->philo[i].eat_count = 0;
+	if (pthread_mutex_init(&(data->philo[i].fork_l), NULL) != 0)
+		return (false);
+	if (i == data->n_philo - 1)
+		data->philo[i].fork_r = &data->philo[0].fork_l;
+	else
+		data->philo[i].fork_r = &data->philo[i + 1].fork_l;
+	return (true);
 }

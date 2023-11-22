@@ -1,26 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   init_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 01:42:05 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/22 02:25:39 by paulo            ###   ########.fr       */
+/*   Created: 2023/11/22 03:59:30 by paulo             #+#    #+#             */
+/*   Updated: 2023/11/22 13:40:02 by paulo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philosophers_bonus.h"
 
 static bool	check_args(char **argv);
-static bool	init_mutex(t_data *data);
+static bool	init_semaphores(t_data *data);
 static bool	init_args(t_data *data, char **argv);
 
 bool	init_data(t_data *data, char **argv)
 {
 	ft_memset(data, 0, sizeof(t_data));
-	if (!init_mutex(data))
-		return (false);
 	data->stop = false;
 	if (!check_args(argv))
 	{
@@ -29,6 +27,8 @@ bool	init_data(t_data *data, char **argv)
 	}
 	data->n_philo = ft_atoi(argv[1]);
 	if (data->n_philo <= 0)
+		return (false);
+	if (!init_semaphores(data))
 		return (false);
 	data->philo = malloc(sizeof(t_philo) * data->n_philo);
 	if (data->philo == NULL)
@@ -68,12 +68,21 @@ static bool	check_args(char **argv)
 	return (true);
 }
 
-static bool	init_mutex(t_data *data)
+static bool	init_semaphores(t_data *data)
 {
-	if (pthread_mutex_init(&data->print, NULL) != 0
-		|| pthread_mutex_init(&data->m_stop, NULL) != 0
-		|| pthread_mutex_init(&data->m_eat, NULL) != 0
-		|| pthread_mutex_init(&data->dead, NULL) != 0)
+	sem_unlink("dead");
+	sem_unlink("message");
+	sem_unlink("print");
+	sem_unlink("eat");
+	sem_unlink("forks");
+	data->sem_dead = sem_open("dead", O_CREAT, 0666, 1);
+	data->sem_print = sem_open("print", O_CREAT, 0666, 1);
+	data->sem_stop = sem_open("stop", O_CREAT, 0666, 1);
+	data->sem_eat = sem_open("eat", O_CREAT, 0666, 1);
+	data->sem_forks = sem_open("forks", O_CREAT, 0666, data->n_philo);
+	if (data->sem_dead == SEM_FAILED || data->sem_print == SEM_FAILED
+		|| data->sem_stop == SEM_FAILED || data->sem_eat == SEM_FAILED
+		|| data->sem_forks == SEM_FAILED)
 		return (false);
 	return (true);
 }

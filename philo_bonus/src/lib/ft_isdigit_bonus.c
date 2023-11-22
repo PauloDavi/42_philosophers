@@ -1,19 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_bonus.h                                      :+:      :+:    :+:   */
+/*   ft_isdigit_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/16 19:08:04 by paulo             #+#    #+#             */
-/*   Updated: 2023/10/30 14:14:55 by paulo            ###   ########.fr       */
+/*   Created: 2023/11/20 09:17:19 by paulo             #+#    #+#             */
+/*   Updated: 2023/11/22 04:51:38 by paulo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_BONUS_H
-# define PHILO_BONUS_H
+#include "philosophers_bonus.h"
 
-# include <stdio.h>
-# include <stdlib.h>
-
-#endif
+bool	ft_isdigit(int c)
+{
+	if (c >= '0' && c <= '9')
+		return (true);
+	return (false);
+}

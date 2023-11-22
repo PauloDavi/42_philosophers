@@ -1,7 +1,7 @@
 vpath %.c src src/lib
 
 NAME := philo
-CFLAGS := -Wextra -Wall
+CFLAGS := -Wextra -Wall -Werror
 CFLAGS += -g3 -O3
 JOBS := -j50
 
@@ -35,9 +35,6 @@ $(NAME): print_start $(OBJS)
 	@$(CC) $(OBJS) $(LIBS) $(INCLUDES) $(CFLAGS) -o $(NAME)
 	@echo "$(GREEN)$(NAME) compiled!$(RESET)"
 
-val: all
-	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --track-origins=yes --trace-children=yes --trace-children-skip='*/bin/*,*/sbin/*' -q ./$(NAME)
-
 clean:
 	@$(RM) $(OBJ_DIR)
 
@@ -46,4 +43,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re val
+.PHONY: all print_start clean fclean re

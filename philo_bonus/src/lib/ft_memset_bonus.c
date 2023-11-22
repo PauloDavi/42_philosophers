@@ -1,28 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   ft_memset_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 01:43:36 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/22 02:37:52 by paulo            ###   ########.fr       */
+/*   Created: 2023/11/20 09:40:42 by paulo             #+#    #+#             */
+/*   Updated: 2023/11/22 04:51:41 by paulo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philosophers_bonus.h"
 
-void	free_all(t_data *data)
+void	*ft_memset(void *s, int c, size_t n)
 {
-	int	i;
+	char	*ptr;
 
-	i = 0;
-	while (i < data->n_philo)
-		pthread_mutex_destroy(&data->philo[i++].fork_l);
-	pthread_mutex_destroy(&data->print);
-	pthread_mutex_destroy(&data->m_stop);
-	pthread_mutex_destroy(&data->m_eat);
-	pthread_mutex_destroy(&data->dead);
-	if (data->philo != NULL)
-		free(data->philo);
+	ptr = (char *)s;
+	while (n--)
+		*ptr++ = (unsigned char)c;
+	return (s);
 }

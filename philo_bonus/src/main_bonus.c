@@ -1,28 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 01:43:36 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/22 02:37:52 by paulo            ###   ########.fr       */
+/*   Created: 2023/11/22 04:20:18 by paulo             #+#    #+#             */
+/*   Updated: 2023/11/22 05:07:58 by paulo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philosophers_bonus.h"
 
-void	free_all(t_data *data)
+int	main(int argc, char **argv)
 {
-	int	i;
+	t_data	data;
 
-	i = 0;
-	while (i < data->n_philo)
-		pthread_mutex_destroy(&data->philo[i++].fork_l);
-	pthread_mutex_destroy(&data->print);
-	pthread_mutex_destroy(&data->m_stop);
-	pthread_mutex_destroy(&data->m_eat);
-	pthread_mutex_destroy(&data->dead);
-	if (data->philo != NULL)
-		free(data->philo);
+	if (argc != 5 && argc != 6)
+		return (EXIT_FAILURE);
+	if (!init_data(&data, argv))
+	{
+		if (data.philo != NULL)
+			free(data.philo);
+		return (EXIT_FAILURE);
+	}
+	philo_handler(&data);
+	free_all(&data);
+	return (EXIT_SUCCESS);
 }

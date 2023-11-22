@@ -1,6 +1,6 @@
-vpath %.c src
+vpath %.c src src/lib
 
-NAME := philo
+NAME := philo_bonus
 CFLAGS := -Wextra -Wall -Werror
 CFLAGS += -g3 -O3
 JOBS := -j50
@@ -16,10 +16,12 @@ OBJ_DIR := build
 INCLUDE_DIR_BONUS := include
 INCLUDES := -I$(INCLUDE_DIR_BONUS)
 
-SRCS_BONUS := philosophers_bonus.c
+SRCS_BONUS := utils_bonus.c exit_bonus.c ft_atoi_bonus.c ft_isspace_bonus.c
+SRCS_BONUS += ft_memset_bonus.c ft_isdigit_bonus.c main_bonus.c
+SRCS_BONUS += philosophers_bonus.c init_bonus.c
 OBJS_BONUS := $(addprefix $(OBJ_DIR)/, $(SRCS_BONUS:.c=.o))
 
-bonus: $(NAME)_bonus
+all: $(NAME)
 
 print_start:
 	@echo "$(YELLOW)Compiling $(NAME)...$(RESET)"
@@ -30,19 +32,16 @@ $(OBJ_DIR)/%.o: %.c | $(OBJ_DIR)
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 
-$(NAME)_bonus: print_start $(OBJS_BONUS)
-	@$(CC) $(OBJS_BONUS) $(LIBS) $(INCLUDES) $(CFLAGS) -o $(NAME)_bonus
+$(NAME): print_start $(OBJS_BONUS)
+	@$(CC) $(OBJS_BONUS) $(LIBS) $(INCLUDES) $(CFLAGS) -o $(NAME)
 	@echo "$(GREEN)$(NAME)_bonus compiled!$(RESET)"
-
-bval: bonus
-	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --track-origins=yes --trace-children=yes --trace-children-skip='*/bin/*,*/sbin/*' -q ./$(NAME)_bonus
 
 clean:
 	@$(RM) $(OBJ_DIR)
 
 fclean: clean
-	@$(RM) $(NAME)_bonus
+	@$(RM) $(NAME)
 
-rebonus: fclean bonus
+re: fclean all
 
-.PHONY: clean fclean bonus rebonus bval
+.PHONY: all print_start clean fclean re
