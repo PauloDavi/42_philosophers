@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers_bonus.h                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pdavi-al <pdavi-al@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/16 19:08:04 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/22 10:17:05 by paulo            ###   ########.fr       */
+/*   Created: 2023/09/16 19:08:04 by pdavi-al          #+#    #+#             */
+/*   Updated: 2023/11/23 23:47:22 by pdavi-al         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,27 +29,25 @@ typedef struct s_philo	t_philo;
 
 typedef struct s_data
 {
-	int					philo_eat;
+	int					n_philo_eat;
 	int					n_philo;
+	int					n_eat;
 	long int			t_die;
 	long int			t_eat;
 	long int			t_sleep;
-	long int			n_eat;
 	long int			t_start;
-	bool				stop;
-	t_philo				*philo;
+	t_philo				*philos;
 	sem_t				*sem_print;
 	sem_t				*sem_stop;
 	sem_t				*sem_eat;
-	sem_t				*sem_dead;
 	sem_t				*sem_forks;
 }						t_data;
 
 typedef struct s_philo
 {
-	size_t				n;
-	long int			eat_count;
-	long int			last_eat;
+	int					n;
+	int					eat_count;
+	long int			t_last_eat;
 	t_data				*data;
 	pid_t				pid;
 }						t_philo;
@@ -65,10 +63,10 @@ void					philo_handler(t_data *data);
 
 // Utils
 void					philo_init(t_data *data, int i);
-bool					is_dead(t_philo *philo, bool set_dead);
 long int				timestamp(void);
 void					msleep(int ms);
 void					print(t_philo *philo, char *str);
+void					*stop_handler(void *content);
 
 // Lib
 long int				ft_atoi(const char *str);

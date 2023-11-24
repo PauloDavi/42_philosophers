@@ -2,7 +2,7 @@ vpath %.c src src/lib
 
 NAME := philo
 CFLAGS := -Wextra -Wall -Werror
-CFLAGS += -g3 -O3
+CFLAGS += -g3 -O3 -pthread
 JOBS := -j50
 
 YELLOW := $(shell tput setaf 3)
@@ -16,8 +16,8 @@ OBJ_DIR := build
 INCLUDE_DIR := include
 INCLUDES := -I$(INCLUDE_DIR)
 
-SRCS := philosophers.c ft_atoi.c init.c utils.c exit.c main.c ft_isdigit.c
-SRCS += ft_isspace.c ft_memset.c
+SRCS := philosophers.c init.c utils.c exit.c main.c
+SRCS += ft_isspace.c ft_memset.c ft_atoi.c ft_isdigit.c
 OBJS := $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
 all: $(NAME)
@@ -32,7 +32,7 @@ $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 
 $(NAME): print_start $(OBJS)
-	@$(CC) $(OBJS) $(LIBS) $(INCLUDES) $(CFLAGS) -o $(NAME)
+	@$(CC) $(OBJS) $(INCLUDES) $(CFLAGS) -o $(NAME)
 	@echo "$(GREEN)$(NAME) compiled!$(RESET)"
 
 clean:

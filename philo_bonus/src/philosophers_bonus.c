@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pdavi-al <pdavi-al@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/22 04:00:46 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/22 13:39:46 by paulo            ###   ########.fr       */
+/*   Created: 2023/11/22 04:00:46 by pdavi-al          #+#    #+#             */
+/*   Updated: 2023/11/23 23:59:55 by pdavi-al         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,26 +19,28 @@ static void	philo_eat(t_philo *philo);
 
 void	philo_handler(t_data *data)
 {
-	int	i;
+	int			i;
+	pthread_t	stop;
 
 	i = 0;
+	while (i < data->n_philo)
+		philo_init(data, i++);
+	i = 0;
+	sem_wait(data->sem_stop);
 	data->t_start = timestamp();
 	while (i < data->n_philo)
 	{
-		data->philo[i].pid = fork();
-		if (data->philo[i].pid == 0)
-		{
-			philo_init(data, i);
-			philo_life(&(data->philo[i]));
-			exit(0);
-		}
+		data->philos[i].pid = fork();
+		if (data->philos[i].pid == 0)
+			philo_life(&(data->philos[i]));
 		i++;
 	}
+	pthread_create(&stop, NULL, stop_handler, data);
+	pthread_detach(stop);
 	i = 0;
 	while (i < data->n_philo)
-	{
-		waitpid(data->philo[i++].pid, NULL, 0);
-	}
+		waitpid(data->philos[i++].pid, NULL, 0);
+	sem_post(data->sem_stop);
 }
 
 static void	*check_death(void *content)
@@ -48,18 +50,16 @@ static void	*check_death(void *content)
 	philo = content;
 	msleep(philo->data->t_die + 1);
 	sem_wait(philo->data->sem_eat);
-	sem_wait(philo->data->sem_stop);
-	if (!is_dead(philo, false) && timestamp()
-		- philo->last_eat >= philo->data->t_die)
+	if ((timestamp() - philo->t_last_eat) >= philo->data->t_die)
 	{
+		if (philo->data->n_eat != 0 && philo->eat_count == philo->data->n_eat)
+			return (NULL);
 		sem_post(philo->data->sem_eat);
-		sem_post(philo->data->sem_stop);
 		print(philo, "died\n");
-		is_dead(philo, true);
+		sem_post(philo->data->sem_stop);
 		return (NULL);
 	}
 	sem_post(philo->data->sem_eat);
-	sem_post(philo->data->sem_stop);
 	return (NULL);
 }
 
@@ -67,25 +67,14 @@ static void	philo_life(t_philo *philo)
 {
 	pthread_t	death;
 
-	if (philo->n % 2 == 0)
-		msleep(philo->data->t_eat / 10);
-	while (!is_dead(philo, false))
+	while (true)
 	{
 		pthread_create(&death, NULL, check_death, philo);
 		take_fork(philo);
 		philo_eat(philo);
 		pthread_detach(death);
-		if (philo->eat_count == philo->data->n_eat)
-		{
-			sem_wait(philo->data->sem_stop);
-			if (++philo->data->philo_eat == philo->data->n_philo)
-			{
-				sem_post(philo->data->sem_stop);
-				is_dead(philo, true);
-			}
-			sem_post(philo->data->sem_stop);
-			return ;
-		}
+		if (philo->data->n_eat != 0 && philo->eat_count == philo->data->n_eat)
+			exit(EXIT_SUCCESS);
 	}
 }
 
@@ -106,7 +95,7 @@ static void	philo_eat(t_philo *philo)
 {
 	print(philo, "is eating\n");
 	sem_wait(philo->data->sem_eat);
-	philo->last_eat = timestamp();
+	philo->t_last_eat = timestamp();
 	philo->eat_count++;
 	sem_post(philo->data->sem_eat);
 	msleep(philo->data->t_eat);

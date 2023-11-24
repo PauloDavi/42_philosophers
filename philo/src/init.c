@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pdavi-al <pdavi-al@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 01:42:05 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/22 02:25:39 by paulo            ###   ########.fr       */
+/*   Created: 2023/11/01 01:42:05 by pdavi-al          #+#    #+#             */
+/*   Updated: 2023/11/23 23:09:24 by pdavi-al         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,21 @@ static bool	init_args(t_data *data, char **argv);
 
 bool	init_data(t_data *data, char **argv)
 {
-	ft_memset(data, 0, sizeof(t_data));
-	if (!init_mutex(data))
-		return (false);
-	data->stop = false;
 	if (!check_args(argv))
 	{
 		printf("Invalid Arguments\n");
 		return (false);
 	}
+	ft_memset(data, 0, sizeof(t_data));
+	if (!init_mutex(data))
+		return (false);
 	data->n_philo = ft_atoi(argv[1]);
 	if (data->n_philo <= 0)
 		return (false);
-	data->philo = malloc(sizeof(t_philo) * data->n_philo);
-	if (data->philo == NULL)
+	data->philos = malloc(sizeof(t_philo) * data->n_philo);
+	if (data->philos == NULL)
 		return (false);
-	ft_memset(data->philo, 0, sizeof(t_philo) * data->n_philo);
+	ft_memset(data->philos, 0, sizeof(t_philo) * data->n_philo);
 	if (!init_args(data, argv))
 	{
 		printf("Invalid Arguments\n");
@@ -70,17 +69,15 @@ static bool	check_args(char **argv)
 
 static bool	init_mutex(t_data *data)
 {
-	if (pthread_mutex_init(&data->print, NULL) != 0
-		|| pthread_mutex_init(&data->m_stop, NULL) != 0
-		|| pthread_mutex_init(&data->m_eat, NULL) != 0
-		|| pthread_mutex_init(&data->dead, NULL) != 0)
+	if (pthread_mutex_init(&data->m_print, NULL) != 0
+		|| pthread_mutex_init(&data->m_dead, NULL) != 0)
 		return (false);
 	return (true);
 }
 
 static bool	init_args(t_data *data, char **argv)
 {
-	data->philo_eat = 0;
+	data->n_philo_eat = 0;
 	data->t_die = ft_atoi(argv[2]);
 	data->t_eat = ft_atoi(argv[3]);
 	data->t_sleep = ft_atoi(argv[4]);

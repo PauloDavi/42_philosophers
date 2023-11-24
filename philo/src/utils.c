@@ -3,23 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pdavi-al <pdavi-al@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 01:35:01 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/22 02:43:42 by paulo            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "philosophers.h"
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jdecorte42 <jdecorte42@student.42.fr>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/28 16:15:25 by jdecorte42        #+#    #+#             */
-/*   Updated: 2022/04/12 11:15:35 by jdecorte42       ###   ########.fr       */
+/*   Created: 2023/11/01 01:35:01 by pdavi-al          #+#    #+#             */
+/*   Updated: 2023/11/24 00:02:40 by pdavi-al         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +14,14 @@
 
 bool	is_dead(t_philo *philo, bool set_dead)
 {
-	pthread_mutex_lock(&philo->data->dead);
+	bool	ret;
+
+	pthread_mutex_lock(&philo->data->m_dead);
 	if (set_dead)
 		philo->data->stop = true;
-	if (philo->data->stop)
-	{
-		pthread_mutex_unlock(&philo->data->dead);
-		return (true);
-	}
-	pthread_mutex_unlock(&philo->data->dead);
-	return (false);
+	ret = philo->data->stop;
+	pthread_mutex_unlock(&philo->data->m_dead);
+	return (ret);
 }
 
 long int	timestamp(void)
@@ -60,25 +45,29 @@ void	print(t_philo *philo, char *str)
 {
 	long int	time;
 
-	pthread_mutex_lock(&(philo->data->print));
 	time = timestamp() - philo->data->t_start;
-	if (!philo->data->stop && time >= 0 && !is_dead(philo, false))
-		printf("%ld %ld %s", timestamp() - philo->data->t_start, philo->n, str);
-	pthread_mutex_unlock(&(philo->data->print));
+	if (!is_dead(philo, false))
+	{
+		pthread_mutex_lock(&(philo->data->m_print));
+		printf("%ld %d %s", timestamp() - philo->data->t_start, philo->n, str);
+		pthread_mutex_unlock(&(philo->data->m_print));
+	}
 }
 
 bool	philo_init(t_data *data, int i)
 {
-	data->philo[i].n = i + 1;
-	data->philo[i].last_eat = 0;
-	data->philo[i].fork_r = NULL;
-	data->philo[i].data = data;
-	data->philo[i].eat_count = 0;
-	if (pthread_mutex_init(&(data->philo[i].fork_l), NULL) != 0)
+	data->philos[i].n = i + 1;
+	data->philos[i].data = data;
+	data->philos[i].eat_count = 0;
+	data->philos[i].t_last_eat = 0;
+	data->philos[i].fork_r = NULL;
+	if (pthread_mutex_init(&(data->philos[i].fork_l), NULL) != 0)
+		return (false);
+	if (pthread_mutex_init(&(data->philos[i].m_eat), NULL) != 0)
 		return (false);
 	if (i == data->n_philo - 1)
-		data->philo[i].fork_r = &data->philo[0].fork_l;
+		data->philos[i].fork_r = &data->philos[0].fork_l;
 	else
-		data->philo[i].fork_r = &data->philo[i + 1].fork_l;
+		data->philos[i].fork_r = &data->philos[i + 1].fork_l;
 	return (true);
 }

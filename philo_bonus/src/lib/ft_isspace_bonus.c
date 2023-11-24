@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_isspace_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pdavi-al <pdavi-al@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/20 09:16:45 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/22 04:51:34 by paulo            ###   ########.fr       */
+/*   Created: 2023/11/20 09:16:45 by pdavi-al          #+#    #+#             */
+/*   Updated: 2023/11/23 23:02:06 by pdavi-al         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,5 @@
 
 bool	ft_isspace(int c)
 {
-	if ((c >= 9 && c <= 13) || (c == ' '))
-		return (true);
-	return (false);
+	return ((c >= 9 && c <= 13) || (c == ' '));
 }

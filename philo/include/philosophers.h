@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pdavi-al <pdavi-al@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/16 19:08:04 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/22 10:17:45 by paulo            ###   ########.fr       */
+/*   Created: 2023/09/16 19:08:04 by pdavi-al          #+#    #+#             */
+/*   Updated: 2023/11/23 23:07:14 by pdavi-al         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,28 +25,27 @@ typedef struct s_philo	t_philo;
 
 typedef struct s_data
 {
-	int					philo_eat;
+	int					n_philo_eat;
 	int					n_philo;
+	int					n_eat;
 	long int			t_die;
 	long int			t_eat;
 	long int			t_sleep;
-	long int			n_eat;
 	long int			t_start;
 	bool				stop;
-	t_philo				*philo;
-	pthread_mutex_t		print;
-	pthread_mutex_t		m_stop;
-	pthread_mutex_t		m_eat;
-	pthread_mutex_t		dead;
+	t_philo				*philos;
+	pthread_mutex_t		m_print;
+	pthread_mutex_t		m_dead;
 }						t_data;
 
 typedef struct s_philo
 {
-	size_t				n;
-	long int			eat_count;
-	long int			last_eat;
-	pthread_t			thread;
+	int					n;
+	int					eat_count;
+	long int			t_last_eat;
 	t_data				*data;
+	pthread_t			thread;
+	pthread_mutex_t		m_eat;
 	pthread_mutex_t		*fork_r;
 	pthread_mutex_t		fork_l;
 }						t_philo;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pdavi-al <pdavi-al@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/22 04:20:18 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/22 05:07:58 by paulo            ###   ########.fr       */
+/*   Created: 2023/11/22 04:20:18 by pdavi-al          #+#    #+#             */
+/*   Updated: 2023/11/23 23:12:02 by pdavi-al         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	if (!init_data(&data, argv))
 	{
-		if (data.philo != NULL)
-			free(data.philo);
+		if (data.philos != NULL)
+			free(data.philos);
 		return (EXIT_FAILURE);
 	}
 	philo_handler(&data);

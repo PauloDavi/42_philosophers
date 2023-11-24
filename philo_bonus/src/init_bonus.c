@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pdavi-al <pdavi-al@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/22 03:59:30 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/22 13:40:02 by paulo            ###   ########.fr       */
+/*   Created: 2023/11/22 03:59:30 by pdavi-al          #+#    #+#             */
+/*   Updated: 2023/11/23 23:51:46 by pdavi-al         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,21 @@ static bool	init_args(t_data *data, char **argv);
 
 bool	init_data(t_data *data, char **argv)
 {
-	ft_memset(data, 0, sizeof(t_data));
-	data->stop = false;
 	if (!check_args(argv))
 	{
 		printf("Invalid Arguments\n");
 		return (false);
 	}
+	ft_memset(data, 0, sizeof(t_data));
 	data->n_philo = ft_atoi(argv[1]);
 	if (data->n_philo <= 0)
 		return (false);
 	if (!init_semaphores(data))
 		return (false);
-	data->philo = malloc(sizeof(t_philo) * data->n_philo);
-	if (data->philo == NULL)
+	data->philos = malloc(sizeof(t_philo) * data->n_philo);
+	if (data->philos == NULL)
 		return (false);
-	ft_memset(data->philo, 0, sizeof(t_philo) * data->n_philo);
+	ft_memset(data->philos, 0, sizeof(t_philo) * data->n_philo);
 	if (!init_args(data, argv))
 	{
 		printf("Invalid Arguments\n");
@@ -70,26 +69,23 @@ static bool	check_args(char **argv)
 
 static bool	init_semaphores(t_data *data)
 {
-	sem_unlink("dead");
-	sem_unlink("message");
 	sem_unlink("print");
+	sem_unlink("stop");
 	sem_unlink("eat");
 	sem_unlink("forks");
-	data->sem_dead = sem_open("dead", O_CREAT, 0666, 1);
 	data->sem_print = sem_open("print", O_CREAT, 0666, 1);
 	data->sem_stop = sem_open("stop", O_CREAT, 0666, 1);
 	data->sem_eat = sem_open("eat", O_CREAT, 0666, 1);
 	data->sem_forks = sem_open("forks", O_CREAT, 0666, data->n_philo);
-	if (data->sem_dead == SEM_FAILED || data->sem_print == SEM_FAILED
-		|| data->sem_stop == SEM_FAILED || data->sem_eat == SEM_FAILED
-		|| data->sem_forks == SEM_FAILED)
+	if (data->sem_print == SEM_FAILED || data->sem_stop == SEM_FAILED
+		|| data->sem_eat == SEM_FAILED || data->sem_forks == SEM_FAILED)
 		return (false);
 	return (true);
 }
 
 static bool	init_args(t_data *data, char **argv)
 {
-	data->philo_eat = 0;
+	data->n_philo_eat = 0;
 	data->t_die = ft_atoi(argv[2]);
 	data->t_eat = ft_atoi(argv[3]);
 	data->t_sleep = ft_atoi(argv[4]);

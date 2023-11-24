@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_isdigit_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pdavi-al <pdavi-al@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/20 09:17:19 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/22 04:51:38 by paulo            ###   ########.fr       */
+/*   Created: 2023/11/20 09:17:19 by pdavi-al          #+#    #+#             */
+/*   Updated: 2023/11/23 23:01:58 by pdavi-al         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,5 @@
 
 bool	ft_isdigit(int c)
 {
-	if (c >= '0' && c <= '9')
-		return (true);
-	return (false);
+	return (c >= '0' && c <= '9');
 }

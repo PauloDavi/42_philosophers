@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pdavi-al <pdavi-al@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/30 14:12:00 by paulo             #+#    #+#             */
-/*   Updated: 2023/11/22 04:37:26 by paulo            ###   ########.fr       */
+/*   Created: 2023/10/30 14:12:00 by pdavi-al          #+#    #+#             */
+/*   Updated: 2023/11/23 23:09:16 by pdavi-al         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,22 @@ bool	philo_handler(t_data *data)
 {
 	int	i;
 
-	data->t_start = timestamp();
 	i = 0;
 	while (i < data->n_philo)
 		if (!philo_init(data, i++))
 			return (false);
 	i = 0;
+	data->t_start = timestamp();
 	while (i < data->n_philo)
 	{
-		if (pthread_create(&data->philo[i].thread, NULL, &philo_life,
-				&(data->philo[i])) != 0)
+		if (pthread_create(&data->philos[i].thread, NULL, &philo_life,
+				&(data->philos[i])) != 0)
 			return (false);
 		i++;
 	}
 	i = 0;
 	while (i < data->n_philo)
-		if (pthread_join(data->philo[i++].thread, NULL) != 0)
+		if (pthread_join(data->philos[i++].thread, NULL) != 0)
 			return (false);
 	return (true);
 }
@@ -55,17 +55,8 @@ static void	*philo_life(void *content)
 		take_fork(philo);
 		philo_eat(philo);
 		pthread_detach(death);
-		if (philo->eat_count == philo->data->n_eat)
-		{
-			pthread_mutex_lock(&philo->data->m_stop);
-			if (++philo->data->philo_eat == philo->data->n_philo)
-			{
-				pthread_mutex_unlock(&philo->data->m_stop);
-				is_dead(philo, true);
-			}
-			pthread_mutex_unlock(&philo->data->m_stop);
+		if (philo->data->n_eat != 0 && philo->eat_count == philo->data->n_eat)
 			return (NULL);
-		}
 	}
 	return (NULL);
 }
@@ -76,19 +67,17 @@ static void	*check_death(void *content)
 
 	philo = content;
 	msleep(philo->data->t_die + 1);
-	pthread_mutex_lock(&philo->data->m_eat);
-	pthread_mutex_lock(&philo->data->m_stop);
-	if (!is_dead(philo, false) && timestamp()
-		- philo->last_eat >= philo->data->t_die)
+	pthread_mutex_lock(&philo->m_eat);
+	if ((timestamp() - philo->t_last_eat) >= philo->data->t_die)
 	{
-		pthread_mutex_unlock(&philo->data->m_eat);
-		pthread_mutex_unlock(&philo->data->m_stop);
+		if (philo->data->n_eat != 0 && philo->eat_count == philo->data->n_eat)
+			return (NULL);
+		pthread_mutex_unlock(&philo->m_eat);
 		print(philo, "died\n");
 		is_dead(philo, true);
 		return (NULL);
 	}
-	pthread_mutex_unlock(&philo->data->m_eat);
-	pthread_mutex_unlock(&philo->data->m_stop);
+	pthread_mutex_unlock(&philo->m_eat);
 	return (NULL);
 }
 
@@ -108,10 +97,10 @@ static void	take_fork(t_philo *philo)
 static void	philo_eat(t_philo *philo)
 {
 	print(philo, "is eating\n");
-	pthread_mutex_lock(&(philo->data->m_eat));
-	philo->last_eat = timestamp();
+	pthread_mutex_lock(&(philo->m_eat));
+	philo->t_last_eat = timestamp();
 	philo->eat_count++;
-	pthread_mutex_unlock(&(philo->data->m_eat));
+	pthread_mutex_unlock(&(philo->m_eat));
 	msleep(philo->data->t_eat);
 	pthread_mutex_unlock((philo->fork_r));
 	pthread_mutex_unlock(&(philo->fork_l));
