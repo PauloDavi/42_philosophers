@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pdavi-al <pdavi-al@student.42.fr>          +#+  +:+       +#+        */
+/*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 04:00:46 by pdavi-al          #+#    #+#             */
-/*   Updated: 2023/11/23 23:59:55 by pdavi-al         ###   ########.fr       */
+/*   Updated: 2023/11/25 11:24:03 by paulo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,14 +80,16 @@ static void	philo_life(t_philo *philo)
 
 static void	take_fork(t_philo *philo)
 {
-	sem_wait(philo->data->sem_forks);
-	print(philo, "has taken a fork\n");
 	if (philo->data->n_philo == 1)
 	{
+		sem_wait(philo->data->sem_forks);
+		print(philo, "has taken a fork\n");
 		msleep(philo->data->t_die * 2);
 		return ;
 	}
 	sem_wait(philo->data->sem_forks);
+	sem_wait(philo->data->sem_forks);
+	print(philo, "has taken a fork\n");
 	print(philo, "has taken a fork\n");
 }
 

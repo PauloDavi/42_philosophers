@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pdavi-al <pdavi-al@student.42.fr>          +#+  +:+       +#+        */
+/*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 01:35:01 by pdavi-al          #+#    #+#             */
-/*   Updated: 2023/11/24 00:02:40 by pdavi-al         ###   ########.fr       */
+/*   Updated: 2023/11/25 11:12:11 by paulo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	print(t_philo *philo, char *str)
 	if (!is_dead(philo, false))
 	{
 		pthread_mutex_lock(&(philo->data->m_print));
-		printf("%ld %d %s", timestamp() - philo->data->t_start, philo->n, str);
+		printf("%ld %d %s", time, philo->n, str);
 		pthread_mutex_unlock(&(philo->data->m_print));
 	}
 }

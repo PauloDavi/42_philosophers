@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pdavi-al <pdavi-al@student.42.fr>          +#+  +:+       +#+        */
+/*   By: paulo <paulo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 04:00:05 by pdavi-al          #+#    #+#             */
-/*   Updated: 2023/11/24 00:02:46 by pdavi-al         ###   ########.fr       */
+/*   Updated: 2023/11/25 11:13:06 by paulo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	print(t_philo *philo, char *str)
 
 	time = timestamp() - philo->data->t_start;
 	sem_wait(philo->data->sem_print);
-	printf("%ld %d %s", timestamp() - philo->data->t_start, philo->n, str);
+	printf("%ld %d %s", time, philo->n, str);
 	sem_post(philo->data->sem_print);
 }
 
